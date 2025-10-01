@@ -1,12 +1,22 @@
 use crate::globals::*;
 
-pub fn decrypt(msg: String, shift_value: i32) -> String {
+pub fn decrypt(msg: String, _key: &str) -> String {
     let mut decrypted_msg = String::new();
+    let key_len = _key.len();
+    let mut key_it = 0;
     for c in msg.chars() {
         let new_c = if c.is_ascii_uppercase() {
-            shift(TOTAL_LETTERS, c, -shift_value, UP_MIN_INDEX) as u8 as char
+            let c_index = get_char_index(c, UP_MIN_INDEX as u8);
+            let key_char = _key.as_bytes()[key_it % key_len] as char;
+            let key_index = get_char_index(key_char, UP_MIN_INDEX as u8);
+            key_it += 1;
+            (modulo26(TOTAL_LETTERS, c_index - key_index) + UP_MIN_INDEX) as u8 as char
         } else if c.is_ascii_lowercase() {
-            shift(TOTAL_LETTERS, c, -shift_value, LOW_MIN_INDEX) as u8 as char
+            let c_index = get_char_index(c, LOW_MIN_INDEX as u8);
+            let key_char = _key.as_bytes()[key_it % key_len] as char;
+            let key_index = get_char_index(key_char, UP_MIN_INDEX as u8);
+            key_it += 1;
+            (modulo26(TOTAL_LETTERS, c_index - key_index) + LOW_MIN_INDEX) as u8 as char
         } else {
             c
         };
@@ -16,13 +26,11 @@ pub fn decrypt(msg: String, shift_value: i32) -> String {
     decrypted_msg
 }
 
-pub fn shift(total_letters: i32, letter: char, shift_value: i32, min_index: i32) -> char {
-    let curr_index = letter as i32 - min_index;
-    let shifted = modulo26(total_letters, curr_index + shift_value);
-    (min_index + shifted) as u8 as char
-}
-
 fn modulo26(total_letters: i32, x: i32) -> i32 {
     let r = x % total_letters;
     if r < 0 { r + total_letters } else { r }
+}
+
+pub fn get_char_index(c: char, index: u8) -> i32 {
+    modulo26(TOTAL_LETTERS, (c.to_string().as_bytes()[0] - index) as i32)
 }

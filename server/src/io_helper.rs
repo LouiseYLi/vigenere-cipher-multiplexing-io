@@ -17,7 +17,7 @@ pub fn handle_request(sock: &mut TcpStream) -> Result<()> {
 
     // encrypt message
     let encrypted_msg = encrypt(msg, key);
-    let encrypted_res: Vec<String> = vec![encrypted_msg, key_str];
+    let encrypted_res: Vec<String> = vec![encrypted_msg];
 
     write_response(sock, &encrypted_res)?;
     Ok(())
@@ -60,7 +60,6 @@ pub fn write_buffer(sock: &mut TcpStream, buffer: &String) -> Result<()> {
 
 pub fn write_response(sock: &mut TcpStream, args: &[String]) -> Result<()> {
     write_buffer(sock, &args[0])?;
-    write_buffer(sock, &args[1])?;
 
     Ok(())
 }

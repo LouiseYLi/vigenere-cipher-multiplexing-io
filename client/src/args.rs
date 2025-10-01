@@ -22,6 +22,12 @@ fn validate_length(vector_length: i32) -> Result<(), String> {
 }
 
 fn validate_key(args: &[String]) -> Result<(), String> {
+    if args[2].is_empty() {
+        return Err(format!(
+            "Invalid key... Expected uppercase string, actual {}",
+            args[2]
+        ));
+    }
     for c in args[2].chars() {
         if !c.is_ascii_uppercase() {
             return Err(format!(

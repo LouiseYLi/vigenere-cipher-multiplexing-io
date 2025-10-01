@@ -28,11 +28,9 @@ fn main() -> Result<()> {
         }
     };
 
-    println!("{}", formatted_ip_at_port);
-    println!("{}", u16::MAX);
-    let mut sock = match TcpStream::connect(formatted_ip_at_port) {
+    let mut sock = match TcpStream::connect(&formatted_ip_at_port) {
         Ok(stream) => {
-            println!("Connected to server at {}", &args[3]);
+            println!("\tConnected to server at {}", &formatted_ip_at_port);
             stream
         }
         Err(e) => {
@@ -49,7 +47,7 @@ fn main() -> Result<()> {
         }
     }
 
-    match handle_encryption(&mut sock) {
+    match handle_encryption(&mut sock, &args[2]) {
         Ok(()) => {}
         Err(e) => {
             eprintln!("Error: {}", e);

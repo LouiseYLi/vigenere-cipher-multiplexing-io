@@ -21,17 +21,13 @@ pub fn write_request(sock: &mut TcpStream, args: &[String]) -> Result<()> {
     Ok(())
 }
 
-pub fn handle_encryption(sock: &mut TcpStream) -> Result<()> {
+pub fn handle_encryption(sock: &mut TcpStream, key_str: &str) -> Result<()> {
     let msg_str: String = convert_to_string(read_token(sock));
-    let shift_value_str: String = convert_to_string(read_token(sock));
 
     println!("Encrypted message: {}", msg_str);
+    println!("Received key: {}", key_str);
 
-    let shift_value: i32 = shift_value_str
-        .parse::<i32>()
-        .map_err(|e| Error::new(ErrorKind::InvalidData, e))?; // Pretty much wraps with Error
-
-    println!("Decrypted message: {}", decrypt(msg_str, shift_value));
+    println!("Decrypted message: {}", decrypt(msg_str, key_str));
 
     Ok(())
 }

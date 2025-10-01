@@ -38,7 +38,7 @@ fn main() -> io::Result<()> {
     //     fs::remove_file(socket_path)?;
     // }
     let listener = TcpListener::bind(&formatted_ip_at_port)?;
-    println!("Server is listening on {}", &formatted_ip_at_port);
+    println!("\tServer is listening on {}", &formatted_ip_at_port);
 
     // let listener = UnixListener::bind(socket_path)?;
 
@@ -47,8 +47,8 @@ fn main() -> io::Result<()> {
     while !terminate.load(Ordering::SeqCst) {
         let mut sock = match listener.accept() {
             Ok((socket, _addr)) => {
-                println!("Accepted client connection");
-                println!("socket: {:?}, addr: {:?}", socket, _addr);
+                println!("\tAccepted client connection");
+                // println!("socket: {:?}, addr: {:?}", socket, _addr);
                 socket
             }
             Err(e) => {
