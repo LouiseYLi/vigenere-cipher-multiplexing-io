@@ -1,5 +1,5 @@
 use crate::cipher::*;
-use crate::io::Error;
+// use crate::io::Error;
 
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
 use std::io::*;
@@ -7,20 +7,18 @@ use std::net::TcpStream;
 
 pub fn handle_request(sock: &mut TcpStream) -> Result<()> {
     let msg_str: String = convert_to_string(read_token(sock));
-    let shift_value_str: String = convert_to_string(read_token(sock));
+    let key_str: String = convert_to_string(read_token(sock));
 
     println!("Message to encrypt: {}", msg_str);
+    println!("Key: {}", key_str);
 
     let msg: &str = &msg_str;
-    let shift_value: i32 = shift_value_str
-        .parse::<i32>()
-        .map_err(|e| Error::new(ErrorKind::InvalidData, e))?; // Pretty much wraps with Error
+    let key: &str = &key_str;
 
     // encrypt message
-    let encrypted_msg = encrypt(msg, shift_value);
-    let encrypted_res: Vec<String> = vec![encrypted_msg, shift_value.to_string()];
-    // send back encrypted message
-    //      E.g. 3hey5
+    let encrypted_msg = encrypt(msg, key);
+    let encrypted_res: Vec<String> = vec![encrypted_msg, key_str];
+
     write_response(sock, &encrypted_res)?;
     Ok(())
 }

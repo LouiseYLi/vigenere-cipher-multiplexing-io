@@ -1,11 +1,11 @@
 use std::net::IpAddr;
 
-
 pub fn validate_args(args: &[String]) -> Result<String, String> {
     validate_length(args.len() as i32)?;
     validate_ip(args)?;
     validate_port(args)?;
     let formatted_ip_at_port = format_ip_port(args);
+    #[allow(clippy::needless_return)]
     return Ok(formatted_ip_at_port);
 }
 
@@ -44,8 +44,8 @@ fn validate_port(args: &[String]) -> Result<(), String> {
 
 fn format_ip_port(args: &[String]) -> String {
     if args[1].contains(':') {
-        return format!("[{}]:{}", args[1], args[2])
+        return format!("[{}]:{}", args[1], args[2]);
     }
-    return format!("{}:{}", args[1], args[2])
+    #[allow(clippy::needless_return)]
+    return format!("{}:{}", args[1], args[2]);
 }
-

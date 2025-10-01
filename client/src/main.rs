@@ -13,7 +13,6 @@ use std::env::args;
 use std::io::*;
 use std::net::TcpStream;
 
-// use std::io::{Read, Write};
 // std::env::args_os use this version of args if arguments include invalid unicode
 
 fn main() -> Result<()> {
@@ -22,18 +21,14 @@ fn main() -> Result<()> {
     let args: Vec<String> = args().collect();
 
     let formatted_ip_at_port = match validate_args(&args) {
-        Ok(formatted_ip_at_port) => {formatted_ip_at_port}
+        Ok(formatted_ip_at_port) => formatted_ip_at_port,
         Err(e) => {
             eprintln!("Error: {}", e);
             std::process::exit(1);
         }
     };
 
-    // let ip_at_port = format!("{}:{}", args[3], args[4]);
     println!("{}", formatted_ip_at_port);
-    // if !ip_at_port.is_empty() {
-    //     std::process::exit(1);
-    // }
     println!("{}", u16::MAX);
     let mut sock = match TcpStream::connect(formatted_ip_at_port) {
         Ok(stream) => {

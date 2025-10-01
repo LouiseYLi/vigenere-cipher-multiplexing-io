@@ -5,7 +5,8 @@ pub fn validate_args(args: &[String]) -> Result<String, String> {
     validate_key(args)?;
     validate_ip(args)?;
     validate_port(args)?;
-    let formatted_ip_at_port = format_ip_port(args); 
+    let formatted_ip_at_port = format_ip_port(args);
+    #[allow(clippy::needless_return)]
     return Ok(formatted_ip_at_port);
 }
 
@@ -56,7 +57,8 @@ fn validate_port(args: &[String]) -> Result<(), String> {
 
 fn format_ip_port(args: &[String]) -> String {
     if args[3].contains(':') {
-        return format!("[{}]:{}", args[3], args[4])
+        return format!("[{}]:{}", args[3], args[4]);
     }
-    return format!("{}:{}", args[3], args[4])
+    #[allow(clippy::needless_return)]
+    return format!("{}:{}", args[3], args[4]);
 }

@@ -12,7 +12,6 @@ use io_helper::*;
 use std::env::args;
 use std::io;
 use std::net::TcpListener;
-// use std::path::Path;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 
@@ -22,7 +21,7 @@ fn main() -> io::Result<()> {
     let t_clone = terminate.clone();
 
     let formatted_ip_at_port = match validate_args(&args) {
-        Ok(formatted_ip_at_port) => {formatted_ip_at_port}
+        Ok(formatted_ip_at_port) => formatted_ip_at_port,
         Err(e) => {
             eprintln!("Error: {}", e);
             std::process::exit(1);
