@@ -14,7 +14,7 @@ fn validate_length(vector_length: i32) -> Result<(), String> {
     const MAX_ARGS: i32 = 5;
     if vector_length != MAX_ARGS {
         return Err(format!(
-            "Invalid number of args... Expected 4, actual {}",
+            "Invalid number of args... Expected 5, actual {}",
             vector_length
         ));
     }
