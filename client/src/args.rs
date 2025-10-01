@@ -2,7 +2,7 @@ use std::net::IpAddr;
 
 pub fn validate_args(args: &[String]) -> Result<String, String> {
     validate_length(args.len() as i32)?;
-    validate_shift_value(args)?;
+    validate_key(args)?;
     validate_ip(args)?;
     validate_port(args)?;
     let formatted_ip_at_port = format_ip_port(args); 
@@ -20,13 +20,16 @@ fn validate_length(vector_length: i32) -> Result<(), String> {
     Ok(())
 }
 
-fn validate_shift_value(args: &[String]) -> Result<(), String> {
-    if args[2].trim().parse::<i32>().is_err() {
-        return Err(format!(
-            "Invalid shift value... Expected integer, actual {}",
-            args[2]
-        ));
+fn validate_key(args: &[String]) -> Result<(), String> {
+    for c in args[2].chars() {
+        if !c.is_ascii_uppercase() {
+            return Err(format!(
+                "Invalid key... Expected uppercase string, actual {}",
+                args[2]
+            ));
+        }
     }
+
     Ok(())
 }
 

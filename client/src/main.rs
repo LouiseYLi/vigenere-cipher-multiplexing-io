@@ -2,13 +2,10 @@ mod args;
 mod cipher;
 mod globals;
 mod io_helper;
-mod sock;
 
 use args::*;
 #[allow(unused_imports)]
 use cipher::*;
-#[allow(unused_imports)]
-use sock::*;
 #[allow(unused_imports)]
 use globals::*;
 use io_helper::*;
