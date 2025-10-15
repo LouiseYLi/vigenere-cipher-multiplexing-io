@@ -11,11 +11,13 @@ use globals::*;
 use io_helper::*;
 use std::env::args;
 use std::io;
-use std::net::TcpListener;
+use tokio::net::TcpListener;
+// use std::net::TcpListener;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 
-fn main() -> io::Result<()> {
+#[tokio::main]
+async fn main() -> io::Result<()> {
     let args: Vec<String> = args().collect();
     let terminate = Arc::new(AtomicBool::new(false));
     let t_clone = terminate.clone();
@@ -34,18 +36,13 @@ fn main() -> io::Result<()> {
     })
     .expect("Error setting up Ctrl-C handler");
 
-    // if Path::new(socket_path).exists() {
-    //     fs::remove_file(socket_path)?;
-    // }
-    let listener = TcpListener::bind(&formatted_ip_at_port)?;
+    let listener = TcpListener::bind(&formatted_ip_at_port).await?;
     println!("\tServer is listening on {}", &formatted_ip_at_port);
-
-    // let listener = UnixListener::bind(socket_path)?;
 
     // loop until CTRL+C received
     //      will terminate after fulfilling one last client connection
     while !terminate.load(Ordering::SeqCst) {
-        let mut sock = match listener.accept() {
+        let mut sock = match listener.accept().await {
             Ok((socket, _addr)) => {
                 println!("\tAccepted client connection");
                 // println!("socket: {:?}, addr: {:?}", socket, _addr);
@@ -56,13 +53,14 @@ fn main() -> io::Result<()> {
                 std::process::exit(1);
             }
         };
-        match handle_request(&mut sock) {
-            Ok(()) => {}
-            Err(e) => {
-                eprintln!("Error:2 {}", e);
-                std::process::exit(1);
+        tokio::spawn(async move {
+            match handle_request(&mut sock).await {
+                Ok(()) => {}
+                Err(e) => {
+                    eprintln!("Error:2 {}", e);
+                }
             }
-        }
+        });
     }
 
     println!("Server closed.");
