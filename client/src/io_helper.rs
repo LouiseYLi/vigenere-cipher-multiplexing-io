@@ -22,7 +22,7 @@ pub fn write_request(sock: &mut TcpStream, args: &[String]) -> Result<()> {
 }
 
 pub fn handle_encryption(sock: &mut TcpStream, key_str: &str) -> Result<()> {
-    let msg_str: String = convert_to_string(read_token(sock));
+    let msg_str: String = convert_to_string(read_token(sock))?;
 
     println!("Encrypted message: {}", msg_str);
     println!("Received key: {}", key_str);
@@ -32,17 +32,11 @@ pub fn handle_encryption(sock: &mut TcpStream, key_str: &str) -> Result<()> {
     Ok(())
 }
 
-fn convert_to_string(payload: Result<Vec<u8>>) -> String {
-    match payload {
-        Ok(bytes) => {
-            // Convert bystes to String, replacing invalid UTF-8 with �
-            String::from_utf8_lossy(&bytes).into_owned()
-        }
-        Err(e) => {
-            eprintln!("Error reading payload: {}", e);
-            String::new() // return empty string on error
-        }
-    }
+fn convert_to_string(
+    payload: std::result::Result<Vec<u8>, Error>,
+) -> std::result::Result<String, std::io::Error> {
+    let bytes = payload?;
+    Ok(String::from_utf8_lossy(&bytes).into_owned())
 }
 
 fn read_token(sock: &mut TcpStream) -> Result<Vec<u8>> {
