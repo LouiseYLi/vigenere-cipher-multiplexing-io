@@ -30,6 +30,9 @@ async fn main() -> io::Result<()> {
         }
     };
 
+    let min_delay = get_delay(&args, 3);
+    let max_delay = get_delay(&args, 4);
+
     ctrlc::set_handler(move || {
         println!("\nSIGINT received! Closing program...");
         t_clone.store(true, Ordering::SeqCst);
@@ -54,7 +57,7 @@ async fn main() -> io::Result<()> {
             }
         };
         tokio::spawn(async move {
-            match handle_request(&mut sock).await {
+            match handle_request(&mut sock, min_delay, max_delay).await {
                 Ok(()) => {}
                 Err(e) => {
                     eprintln!("Error:2 {}", e);

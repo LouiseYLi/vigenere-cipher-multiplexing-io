@@ -3,14 +3,24 @@ use crate::cipher::*;
 
 use byteorder::BigEndian;
 use byteorder::ByteOrder;
+use rand::Rng;
+#[allow(unused_imports)]
+use rand::SeedableRng;
+use rand::rngs::StdRng;
 use tokio::io::Result;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
+use tokio::time::{Duration, sleep};
 
-pub async fn handle_request(sock: &mut TcpStream) -> Result<()> {
+pub async fn handle_request(sock: &mut TcpStream, min_sleep: u16, max_sleep: u16) -> Result<()> {
+    let mut rng = StdRng::from_entropy();
+    let sleep_duration = Duration::from_secs(rng.gen_range(min_sleep..=max_sleep) as u64);
+    println!("Sleeping for {} seconds...", sleep_duration.as_secs());
+    sleep(sleep_duration).await;
+    println!("Woke up after {} seconds!", sleep_duration.as_secs());
+
     let msg_str = convert_to_string(read_token(sock).await?);
     let key_str = convert_to_string(read_token(sock).await?);
-
     println!("Message to encrypt: {}", msg_str);
     println!("Key: {}", key_str);
 
