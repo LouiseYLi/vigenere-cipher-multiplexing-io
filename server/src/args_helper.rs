@@ -52,7 +52,7 @@ fn format_ip_port(args: &[String]) -> String {
 }
 
 fn validate_delays(args: &[String]) -> Result<(), String> {
-    let max_delay = 10;
+    let max_delay = 30;
     if args[3].parse::<u16>().is_err() || args[4].parse::<u16>().is_err() {
         return Err(format!(
             "Invalid delay provided... must be between 1-10: actual min: {} actual max: {}",
@@ -61,11 +61,9 @@ fn validate_delays(args: &[String]) -> Result<(), String> {
     }
     let min = args[3].parse::<u16>().unwrap();
     let max = args[4].parse::<u16>().unwrap();
-    println!("min {:?}", min);
-    println!("max {:?}", max);
     if (min < 1 || min > max_delay) || (max <= min || max > max_delay) {
         return Err(format!(
-            "Invalid delay provided... must be between 1-10: actual min: {} actual max: {}",
+            "Invalid delay provided... must be between 1-30: actual min: {} actual max: {}",
             args[3], args[4]
         ));
     }

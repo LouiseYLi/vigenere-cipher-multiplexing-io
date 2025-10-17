@@ -50,8 +50,15 @@ fn main() -> Result<()> {
     match handle_encryption(&mut sock, &args[2]) {
         Ok(()) => {}
         Err(e) => {
-            eprintln!("Error: {}", e);
-            std::process::exit(1);
+            if e.to_string().contains("failed to fill whole buffer")
+                || e.to_string().contains("Connection reset by peer")
+            {
+                println!("Server closed.");
+                std::process::exit(1);
+            } else {
+                eprintln!("Error: {}", e);
+                std::process::exit(1);
+            }
         }
     }
 
